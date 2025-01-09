@@ -1,13 +1,10 @@
 #pragma once
 
 #include <string>
-#include <variant>
+#include <string_view>
 #include <vector>
-#include <any>
-#include <iostream>
+#include <memory>
 #include "simdjson.h"
-
-using namespace simdjson;
 
 enum class Kind {
   Primitive,
@@ -29,12 +26,17 @@ struct Node {
 
 class Parser {
 private:
+  // Pre-allocated buffer for string conversions
+  std::string conversion_buffer;
   void parseTree(Key key, const simdjson::dom::element& value, int depth);
+  
+  std::string_view numberToStringView(double num);
+  std::string_view numberToStringView(int64_t num);
+  
 public:
   Parser();
   ~Parser();
-
+  
   std::vector<Node> nodes;
-
   void parse(const simdjson::dom::element& node, int depth = 0);
 };

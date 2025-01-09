@@ -1,4 +1,32 @@
 #include "parser.h"
+#include <charconv>
+
+Parser::Parser() = default;
+Parser::~Parser() = default;
+
+std::string_view Parser::numberToStringView(double num) {
+    conversion_buffer.clear();
+    conversion_buffer.resize(32);
+    auto [ptr, ec] = std::to_chars(conversion_buffer.data(), 
+                                  conversion_buffer.data() + conversion_buffer.size(), 
+                                  num);
+    if (ec == std::errc()) {
+        return std::string_view(conversion_buffer.data(), ptr - conversion_buffer.data());
+    }
+    return "0";
+}
+
+std::string_view Parser::numberToStringView(int64_t num) {
+    conversion_buffer.clear();
+    conversion_buffer.resize(32);
+    auto [ptr, ec] = std::to_chars(conversion_buffer.data(), 
+                                  conversion_buffer.data() + conversion_buffer.size(), 
+                                  num);
+    if (ec == std::errc()) {
+        return std::string_view(conversion_buffer.data(), ptr - conversion_buffer.data());
+    }
+    return "0";
+}
 
 void Parser::parseTree(Key key, const simdjson::dom::element& value, int depth) {
   if((!value.is_object() && !value.is_array()) || value.is_null()) {
@@ -9,10 +37,10 @@ void Parser::parseTree(Key key, const simdjson::dom::element& value, int depth) 
           nodeValue = value.get<std::string_view>().value();
           break;
         case simdjson::dom::element_type::INT64:
-          nodeValue = std::to_string(value.get<int64_t>().value());
+          nodeValue = numberToStringView(value.get<int64_t>().value());
           break;
         case simdjson::dom::element_type::DOUBLE:
-          nodeValue = std::to_string(value.get<double>().value());
+          nodeValue = numberToStringView(value.get<double>().value());
           break;
         case simdjson::dom::element_type::BOOL:
           nodeValue = value.get<bool>().value() ? "true" : "false";
@@ -53,11 +81,4 @@ void Parser::parse(const simdjson::dom::element& node, int depth) {
             parseTree(field_key, field_value, depth);
         }
     }
-}
-
-Parser::Parser(/* args */) = default;
-
-Parser::~Parser() {
-  std::cout << "Cleaning parser" << std::endl;
-  nodes.clear();
 }
