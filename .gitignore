@@ -1,0 +1,4 @@
+test.json
+*.out
+*.o
+*.json
