@@ -26,7 +26,7 @@ std::string kind_to_string(Kind kind) {
 
 int main() {
     auto startLoading = high_resolution_clock::now();
-    padded_string json = padded_string::load("./large.json");
+    padded_string json = padded_string::load("./test.json");
     auto stopLoading = high_resolution_clock::now();
 
     std::cout << "Loading time: " << duration_cast<milliseconds>(stopLoading - startLoading).count() << "ms" << std::endl;

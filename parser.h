@@ -17,25 +17,24 @@ enum class Kind {
   ObjectClose
 };
 
-using Key = std::string;
+using Key = std::string_view;
 using Value = std::string_view;
 
 struct Node {
   Key key;
   Value value;
   Kind kind;
-  uint8_t depth;
+  int depth;
 };
 
 class Parser {
 private:
-  void parseTree(Key key, const simdjson::dom::element& value, uint8_t depth);
-
+  void parseTree(Key key, const simdjson::dom::element& value, int depth);
 public:
   Parser();
   ~Parser();
 
   std::vector<Node> nodes;
 
-  void parse(const simdjson::dom::element& node, uint8_t depth = 0);
+  void parse(const simdjson::dom::element& node, int depth = 0);
 };
