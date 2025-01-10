@@ -24,9 +24,13 @@ std::string kind_to_string(Kind kind) {
     }
 }
 
+void print_node(const Node& node) {
+    std::cout << "Key: " << node.key << " Value: " << node.value << " Kind: " << kind_to_string(node.kind) << " Depth: " << node.depth << std::endl;
+}
+
 int main() {
     auto startLoading = high_resolution_clock::now();
-    padded_string json = padded_string::load("./test.json");
+    padded_string json = padded_string::load("./large.json");
     auto stopLoading = high_resolution_clock::now();
 
     std::cout << "Loading time: " << duration_cast<milliseconds>(stopLoading - startLoading).count() << "ms" << std::endl;
@@ -39,7 +43,7 @@ int main() {
     std::cout << "Parsing time: " << duration_cast<milliseconds>(stopParsing - startParsing).count() << "ms" << std::endl;
 
     auto startNodeTreeParsing = high_resolution_clock::now();
-    auto tParser = new Parser();
+    auto tParser = new Parser(json.length());
     tParser->parse(element);  // Agora passando dom::element
     auto stopNodeTreeParsing = high_resolution_clock::now();
 
@@ -49,6 +53,10 @@ int main() {
     std::cout << "Total time: " << duration_cast<milliseconds>(stopNodeTreeParsing - startLoading).count() << "ms" << std::endl;
 
     std::cout << "Nodes: " << tParser->nodes.size() << std::endl;
+
+    // for (const auto& node : tParser->nodes) {
+    //     print_node(node);
+    // }
     delete tParser;
     return 0;
 }

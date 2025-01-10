@@ -2,3 +2,4 @@ test.json
 *.out
 *.o
 *.json
+profile_report.txt

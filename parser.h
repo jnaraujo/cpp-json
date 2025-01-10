@@ -28,13 +28,13 @@ class Parser {
 private:
   // Pre-allocated buffer for string conversions
   std::string conversion_buffer;
-  void parseTree(Key key, const simdjson::dom::element& value, int depth);
+  void parseTree(const Key& key, const simdjson::dom::element& value, int depth);
   
   std::string_view numberToStringView(double num);
   std::string_view numberToStringView(int64_t num);
   
 public:
-  Parser();
+  Parser(size_t jsonSize);
   ~Parser();
   
   std::vector<Node> nodes;
